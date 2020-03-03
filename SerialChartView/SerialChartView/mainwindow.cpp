@@ -6,14 +6,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle(QStringLiteral("串口示波器"));
     ui->comboBox_baut->setCurrentIndex(1);
-    ui->comboBox_number->setCurrentIndex(1);
+    ui->comboBox_number->setCurrentIndex(0);
     ui->comboBox_channel->setCurrentIndex(0);
     number_points_show_ = ui->comboBox_number->currentText().toInt();
 
     this->grabKeyboard();
     //------------------
-    range_ = 100;
+    range_ = 1000;
     offset_ = 0;
     qint16 range_min = -range_;
     qint16 range_max =  range_;
@@ -36,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(serialport_, SIGNAL(readyRead()), this, SLOT(Receieve_Bytes()));
 
     m_timer_= new QTimer;
-    m_timer_->start(100);
+    m_timer_->start(1000);
     connect(m_timer_, SIGNAL(timeout()), this, SLOT(TimerTimeout()));
 
     m_timer1_= new QTimer;
@@ -75,9 +76,9 @@ void MainWindow::addLines()
     }
     m_x_ = number_points_show_-4;
     series->append(data);
-    for(qint16 i=0; i<data.size(); i++){
-        qDebug() << data[i];
-    }
+//    for(qint16 i=0; i<data.size(); i++){
+//        qDebug() << data[i];
+//    }
     chart_.addSeries(series);
 }
 
@@ -176,7 +177,7 @@ void MainWindow::TimerTimeout1()
         for(quint8 i=0; i<6; i++){
             senddata.append(send_data[i]);
         }
-        serialport_->write(senddata);
+//        serialport_->write(senddata);
     }
 }
 
@@ -252,11 +253,24 @@ void MainWindow::on_pushButton_open_clicked()
 void MainWindow::Receieve_Bytes(void)
 {
     QByteArray temp = serialport_->readAll();
+    qreal m_y1, m_y2, m_y3, m_y4;
     if(data_process_.data_process(temp)){
-        qreal m_y1 = 100*qSin((m_x_)/57.3);
-        qreal m_y2 = 100*qSin((m_x_ +60)/57.3);
-        qreal m_y3 = 100*qSin((m_x_ +120)/57.3);
-        qreal m_y4 = 100*qSin((m_x_ +180)/57.3);
+        switch(ui->comboBox_channel->currentIndex()){
+        case 0:
+            m_y1 = data_process_.data_receive[0];
+            m_y2 = 0;
+            m_y3 = 0;
+            m_y4 = 0;
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        default:
+            return;
+        }
         m_series_.at(0)->append(m_x_, m_y1);
         m_series_.at(1)->append(m_x_, m_y2);
         m_series_.at(2)->append(m_x_, m_y3);
@@ -264,7 +278,7 @@ void MainWindow::Receieve_Bytes(void)
         qreal dwidth= chart_.plotArea().width()/(number_points_show_); //一次滚动多少宽度
         chart_.scroll(dwidth, 0);
         m_x_ += 1.0;
-        qDebug() << "rdata" << data_process_.data_receive[0];
+//        qDebug() << "rdata" << data_process_.data_receive[0];
     }
 }
 
@@ -281,7 +295,7 @@ void MainWindow::on_comboBox_number_currentTextChanged(const QString &arg1)
         return;
     }
     number_points_show_ = arg1.toInt();
-    qDebug() << number_points_show_;
+//    qDebug() << number_points_show_;
 
     for(quint16 i=0; i< m_series_.size(); i++){
         m_series_[i]->clear();
