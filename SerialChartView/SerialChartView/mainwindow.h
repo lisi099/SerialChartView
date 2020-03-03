@@ -31,6 +31,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void TimerTimeout1();
     void TimerTimeout();
     void on_pushButton_open_clicked();
     void Receieve_Bytes(void);
@@ -42,9 +43,12 @@ private slots:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
+    void on_comboBox_channel_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QTimer *m_timer;
+    QTimer *m_timer1;
     QStringList init_usart_list;
     QSerialPort *my_serialport;
 

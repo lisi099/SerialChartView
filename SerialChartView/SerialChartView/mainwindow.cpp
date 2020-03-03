@@ -7,9 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->comboBox_baut->setCurrentIndex(1);
-    ui->comboBox_channel->setCurrentIndex(1);
     ui->comboBox_number->setCurrentIndex(1);
+    ui->comboBox_channel->setCurrentIndex(0);
     number_points_show = ui->comboBox_number->currentText().toInt();
+
     this->grabKeyboard();
     //------------------
     range = 100;
@@ -36,14 +37,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(my_serialport, SIGNAL(readyRead()), this, SLOT(Receieve_Bytes()));
 
     m_timer= new QTimer;
-    m_timer->start(1000);
+    m_timer->start(100);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(TimerTimeout()));
+
+    m_timer1= new QTimer;
+    m_timer1->start(100);
+    connect(m_timer1, SIGNAL(timeout()), this, SLOT(TimerTimeout1()));
     //-----------------------------------------------------------------
     m_x=0;
     m_y=0;
     chart.setTheme(QChart::ChartThemeDark);
 //    chart.setTitle(QStringLiteral("波形"));
-    chart.setTitleFont(QFont("微软雅黑",10));
+//    chart.setTitleFont(QFont("微软雅黑",10));
     QPen green(Qt::yellow);
     green.setWidth(2);
     m_series.setName("Channel-1");
@@ -68,6 +73,31 @@ MainWindow::MainWindow(QWidget *parent) :
     chartview->setRenderHint(QPainter::Antialiasing);
     ui->horizontalLayout->addWidget(groupBox);
 
+
+}
+
+void MainWindow::TimerTimeout1()
+{
+    static quint16 data = 0;
+    quint8 send_data[6];
+    QByteArray senddata;
+
+    if(ui->pushButton_open->text()== QStringLiteral("关闭串口")){
+        data++;
+        send_data[0] = 0x55;
+        send_data[1] = 0xaa;
+        send_data[2] = (quint8)data;
+        send_data[3] = (quint8)(data >>8);
+        quint16 crc = data_process.Checksum_u16(&send_data[2], 2);
+        send_data[4] = (quint8)crc;
+        send_data[5] = (quint8)(crc >>8);
+
+        for(quint8 i=0; i<6; i++){
+            senddata.append(send_data[i]);
+//            qDebug() << "--" <<send_data[i];
+        }
+        my_serialport->write(senddata);
+    }
 }
 
 void MainWindow::TimerTimeout()
@@ -148,7 +178,7 @@ void MainWindow::Receieve_Bytes(void)
 {
     QByteArray temp = my_serialport->readAll();
     if(data_process.data_process(temp)){
-
+        qDebug() << "a package" << data_process.data_receive[0];
     }
 }
 
@@ -164,7 +194,7 @@ void MainWindow::on_comboBox_number_currentTextChanged(const QString &arg1)
 
 void MainWindow::wheelEvent(QWheelEvent*event){
 
-    qDebug() << event->delta();
+//    qDebug() << event->delta();
     if(event->delta()>0){
         range += event->delta()/12;
         if(range >30000){
@@ -183,7 +213,7 @@ void MainWindow::wheelEvent(QWheelEvent*event){
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << "presss" << event->key();
+//    qDebug() << "presss" << event->key();
 //    if(event->key() == Qt::Key_Up)
 //    {
 //        offset -= 20;
@@ -202,24 +232,29 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     grabMouse();
     mouse_x = event->x();
     mouse_y = event->y();
-    qDebug() << event->x() << event->y();
+//    qDebug() << event->x() << event->y();
 
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     releaseMouse();
-    qDebug() << event->x() << event->y();
+//    qDebug() << event->x() << event->y();
     qint32 dx = event->x() - mouse_x;
     qint32 dy = event->y() - mouse_y;
 
     if(abs(dx) <150){
         if(abs(dy) >10){
-            offset += range * dy /chart.plotArea().height();\
+            offset += 2* range * dy /chart.plotArea().height();
             range_max = range + offset;
             range_min = -range + offset;
             chart.axisY()->setRange(range_min, range_max);
         }
 
     }
+}
+
+void MainWindow::on_comboBox_channel_currentIndexChanged(const QString &arg1)
+{
+
 }
