@@ -31,6 +31,11 @@ public:
     ~MainWindow();
 
 private slots:
+    void addLines();
+    void removeSeries();
+    void connectMarkers();
+    void disconnectMarkers();
+    void handleMarkerClicked();
     void TimerTimeout1();
     void TimerTimeout();
     void on_pushButton_open_clicked();
@@ -47,24 +52,22 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QTimer *m_timer;
-    QTimer *m_timer1;
-    QStringList init_usart_list;
-    QSerialPort *my_serialport;
+    QTimer *m_timer_;
+    QTimer *m_timer1_;
+    QStringList init_usart_list_;
+    QSerialPort *serialport_;
 
-    QChart chart;
-    QLineSeries m_series;
-    QValueAxis m_axis;
-    qreal m_x;
-    qreal m_y;
+    QChart chart_;
+    QList<QLineSeries *> m_series_;
+    QValueAxis m_axis_;
+    qreal m_x_;
 
-    quint16 number_points_show;
-    qint16 range_max, range_min;
-    qint16 offset;
-    qint16 range;
-    qint32 mouse_x, mouse_y;
+    quint16 number_points_show_;
+    qint16 offset_;
+    qint16 range_;
+    qint32 mouse_x_, mouse_y_;
 
-    DataProcess data_process;
+    DataProcess data_process_;
 };
 
 #endif // MAINWINDOW_H

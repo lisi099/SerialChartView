@@ -96,7 +96,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>通道个数</string>
+           <string>数据长度</string>
           </property>
          </widget>
         </item>
@@ -104,17 +104,7 @@
          <widget class="QComboBox" name="comboBox_channel">
           <item>
            <property name="text">
-            <string>1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
             <string>2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>3</string>
            </property>
           </item>
           <item>
@@ -124,12 +114,12 @@
           </item>
           <item>
            <property name="text">
-            <string>5</string>
+            <string>6</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>6</string>
+            <string>8</string>
            </property>
           </item>
          </widget>

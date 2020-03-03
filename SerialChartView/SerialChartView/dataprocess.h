@@ -15,7 +15,7 @@ public:
     bool data_process(QByteArray &data);
     void set_pack_len(quint16 len);
     quint8 frame[frame_length];
-    qint16 data_receive[6];
+    qint16 data_receive[4];
     quint16 Checksum_u16(quint8* pdata, quint16 len)
     {
         quint16 sum = 0;

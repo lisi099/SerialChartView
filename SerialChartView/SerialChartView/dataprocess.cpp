@@ -12,7 +12,7 @@ DataProcess::~DataProcess()
 
 void DataProcess::set_pack_len(quint16 len)
 {
-    pack_len = len*2;
+    pack_len = len;
 }
 
 bool DataProcess::data_process(QByteArray &data)
