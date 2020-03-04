@@ -40,9 +40,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_timer_->start(1000);
     connect(m_timer_, SIGNAL(timeout()), this, SLOT(TimerTimeout()));
 
-    m_timer1_= new QTimer;
-    m_timer1_->start(100);
-    connect(m_timer1_, SIGNAL(timeout()), this, SLOT(TimerTimeout1()));
+//    m_timer1_= new QTimer;
+//    m_timer1_->start(100);
+//    connect(m_timer1_, SIGNAL(timeout()), this, SLOT(TimerTimeout1()));
     //-----------------------------------------------------------------
 
     QGroupBox *groupBox = new QGroupBox(QStringLiteral("显示"));
@@ -263,10 +263,22 @@ void MainWindow::Receieve_Bytes(void)
             m_y4 = 0;
             break;
         case 1:
+            m_y1 = data_process_.data_receive[0];
+            m_y2 = data_process_.data_receive[1];
+            m_y3 = 0;
+            m_y4 = 0;
             break;
         case 2:
+            m_y1 = data_process_.data_receive[0];
+            m_y2 = data_process_.data_receive[1];
+            m_y3 = data_process_.data_receive[2];
+            m_y4 = 0;
             break;
         case 3:
+            m_y1 = data_process_.data_receive[0];
+            m_y2 = data_process_.data_receive[1];
+            m_y3 = data_process_.data_receive[2];
+            m_y4 = data_process_.data_receive[3];
             break;
         default:
             return;
