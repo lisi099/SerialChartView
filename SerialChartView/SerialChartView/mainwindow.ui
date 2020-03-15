@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>670</width>
-    <height>500</height>
+    <width>1052</width>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>670</width>
+     <width>1052</width>
      <height>21</height>
     </rect>
    </property>
@@ -44,7 +44,7 @@
       <widget class="QGroupBox" name="groupBox_4">
        <property name="maximumSize">
         <size>
-         <width>150</width>
+         <width>200</width>
          <height>16777215</height>
         </size>
        </property>
@@ -52,55 +52,110 @@
         <string>设置</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_4">
+        <item row="4" column="2">
+         <widget class="QLineEdit" name="lineEdit_s2">
           <property name="text">
-           <string>显示点数</string>
+           <string>0</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="comboBox_number">
-          <item>
-           <property name="text">
-            <string>100</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>200</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>300</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>400</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>500</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>1000</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_3">
+        <item row="6" column="2">
+         <widget class="QLineEdit" name="lineEdit_s4">
           <property name="text">
-           <string>数据长度</string>
+           <string>0</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="3" column="2">
+         <widget class="QLineEdit" name="lineEdit_s1">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QLineEdit" name="lineEdit_s3">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="lineEdit_c4">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lineEdit_c3">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Channel1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Channel3</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Channel2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lineEdit_c2">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Channel4</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lineEdit_c1">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3" rowspan="4">
+         <widget class="QPushButton" name="pushButton_set">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Set</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" colspan="2">
          <widget class="QComboBox" name="comboBox_channel">
           <item>
            <property name="text">
@@ -124,6 +179,49 @@
           </item>
          </widget>
         </item>
+        <item row="2" column="2" colspan="2">
+         <widget class="QComboBox" name="comboBox_number">
+          <item>
+           <property name="text">
+            <string>100</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>200</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>400</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>800</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1600</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>数据长度</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>显示点数</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -131,7 +229,7 @@
       <widget class="QGroupBox" name="groupBox_2">
        <property name="maximumSize">
         <size>
-         <width>150</width>
+         <width>200</width>
          <height>16777215</height>
         </size>
        </property>
@@ -156,7 +254,7 @@
       <widget class="QGroupBox" name="groupBox">
        <property name="maximumSize">
         <size>
-         <width>150</width>
+         <width>200</width>
          <height>16777215</height>
         </size>
        </property>

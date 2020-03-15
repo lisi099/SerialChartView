@@ -10,14 +10,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox_baut->setCurrentIndex(1);
     ui->comboBox_number->setCurrentIndex(0);
     ui->comboBox_channel->setCurrentIndex(0);
+    ui->comboBox_number->setCurrentIndex(3);
     number_points_show_ = ui->comboBox_number->currentText().toInt();
 
     this->grabKeyboard();
     //------------------
-    range_ = 1000;
-    offset_ = 0;
-    qint16 range_min = -range_;
-    qint16 range_max =  range_;
+    y_range_ = 1000;
+    y_offset_ = 0;
+    qint16 range_min = -y_range_;
+    qint16 range_max =  y_range_;
 
     //------------------
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
@@ -40,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_timer_->start(1000);
     connect(m_timer_, SIGNAL(timeout()), this, SLOT(TimerTimeout()));
 
-    m_timer1_= new QTimer;
-    m_timer1_->start(100);
-    connect(m_timer1_, SIGNAL(timeout()), this, SLOT(TimerTimeout1()));
+//    m_timer1_= new QTimer;
+//    m_timer1_->start(100);
+//    connect(m_timer1_, SIGNAL(timeout()), this, SLOT(TimerTimeout1()));
     //-----------------------------------------------------------------
 
     QGroupBox *groupBox = new QGroupBox(QStringLiteral("显示"));
@@ -70,11 +71,11 @@ void MainWindow::addLines()
 
     QList<QPointF> data;
     int offset = chart_.series().count();
-    for(qint16 i = 0; i < number_points_show_-4; i++){
-        qreal m_y = 100*qSin((offset*60 +i)/57.3);
+    for(qint16 i = 0; i < number_points_show_; i++){
+        qreal m_y = 800*qSin((offset*60 +i)/57.3);
         data.append(QPointF(i, m_y));
     }
-    m_x_ = number_points_show_-4;
+    m_x_ = number_points_show_;
     series->append(data);
 //    for(qint16 i=0; i<data.size(); i++){
 //        qDebug() << data[i];
@@ -263,21 +264,42 @@ void MainWindow::Receieve_Bytes(void)
             m_y4 = 0;
             break;
         case 1:
+            m_y1 = data_process_.data_receive[0];
+            m_y2 = data_process_.data_receive[1];
+            m_y3 = 0;
+            m_y4 = 0;
             break;
         case 2:
+            m_y1 = data_process_.data_receive[0];
+            m_y2 = data_process_.data_receive[1];
+            m_y3 = data_process_.data_receive[2];
+            m_y4 = 0;
             break;
         case 3:
+            m_y1 = data_process_.data_receive[0];
+            m_y2 = data_process_.data_receive[1];
+            m_y3 = data_process_.data_receive[2];
+            m_y4 = data_process_.data_receive[3];
             break;
         default:
             return;
         }
+        ui->lineEdit_c1->setText(QString::number(m_y1));
+        ui->lineEdit_c2->setText(QString::number(m_y2));
+        ui->lineEdit_c3->setText(QString::number(m_y3));
+        ui->lineEdit_c4->setText(QString::number(m_y4));
         m_series_.at(0)->append(m_x_, m_y1);
         m_series_.at(1)->append(m_x_, m_y2);
         m_series_.at(2)->append(m_x_, m_y3);
         m_series_.at(3)->append(m_x_, m_y4);
-        qreal dwidth= chart_.plotArea().width()/(number_points_show_); //一次滚动多少宽度
-        chart_.scroll(dwidth, 0);
+        m_series_.at(0)->remove(0);
+        m_series_.at(1)->remove(0);
+        m_series_.at(2)->remove(0);
+        m_series_.at(3)->remove(0);
+//        qreal dwidth= chart_.plotArea().width()/(number_points_show_); //一次滚动多少宽度
+//        chart_.scroll(dwidth, 0);
         m_x_ += 1.0;
+        chart_.axisX()->setRange(m_x_ - number_points_show_, m_x_);
 //        qDebug() << "rdata" << data_process_.data_receive[0];
     }
 }
@@ -300,13 +322,13 @@ void MainWindow::on_comboBox_number_currentTextChanged(const QString &arg1)
     for(quint16 i=0; i< m_series_.size(); i++){
         m_series_[i]->clear();
         QList<QPointF> data;
-        for(qint16 j = 0; j < number_points_show_-4; j++){
-            qreal m_y = 100*qSin((i*60 +j)/57.3);
+        for(qint16 j = 0; j < number_points_show_; j++){
+            qreal m_y = 800*qSin((i*60 +j)/57.3);
             data.append(QPointF(j, m_y));
         }
         m_series_[i]->append(data);
     }
-    m_x_ = number_points_show_-4;
+    m_x_ = number_points_show_;
     chart_.axisX()->setRange(0, number_points_show_);
 }
 
@@ -314,18 +336,18 @@ void MainWindow::wheelEvent(QWheelEvent*event){
 
 //    qDebug() << event->delta();
     if(event->delta()>0){
-        range_ += event->delta()/12;
-        if(range_ >30000){
-            range_ =30000;
+        y_range_ += event->delta()/12;
+        if(y_range_ >30000){
+            y_range_ =30000;
         }
     }else{
-        range_ += event->delta()/12;
-        if(range_ <1){
-            range_ =1;
+        y_range_ += event->delta()/12;
+        if(y_range_ <1){
+            y_range_ =1;
         }
     }
-    qint16 range_max = range_ + offset_;
-    qint16 range_min = -range_ + offset_;
+    qint16 range_max = y_range_ + y_offset_;
+    qint16 range_min = -y_range_ + y_offset_;
     chart_.axisY()->setRange(range_min, range_max);
 }
 
@@ -334,14 +356,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 //    qDebug() << "presss" << event->key();
 //    if(event->key() == Qt::Key_Up)
 //    {
-//        offset_ -= 20;
+//        y_offset_ -= 20;
 //    }
 //    else if(event->key() == Qt::Key_Down)
 //    {
-//        offset_ += 20;
+//        y_offset_ += 20;
 //    }
-//    range_max = range_ + offset_;
-//    range_min = -range_ + offset_;
+//    range_max = y_range_ + y_offset_;
+//    range_min = -y_range_ + y_offset_;
 //    chart_.axisY()->setRange(range_min, range_max);
 }
 
@@ -363,9 +385,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 
     if(abs(dx) <150){
         if(abs(dy) >10){
-            offset_ += 2* range_ * dy /chart_.plotArea().height();
-            qint16 range_max = range_ + offset_;
-            qint16 range_min = -range_ + offset_;
+            y_offset_ += 2* y_range_ * dy /chart_.plotArea().height();
+            qint16 range_max = y_range_ + y_offset_;
+            qint16 range_min = -y_range_ + y_offset_;
             chart_.axisY()->setRange(range_min, range_max);
         }
 
@@ -375,4 +397,29 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 void MainWindow::on_comboBox_channel_currentIndexChanged(const QString &arg1)
 {
     data_process_.set_pack_len(arg1.toInt());
+}
+
+void MainWindow::on_pushButton_set_clicked()
+{
+    quint8 send_data[6];
+    QByteArray senddata;
+    qint16 data[4] ={0};
+    data[0] = ui->lineEdit_s1->text().toInt();
+    data[1] = ui->lineEdit_s2->text().toInt();
+    data[2] = ui->lineEdit_s3->text().toInt();
+    data[3] = ui->lineEdit_s4->text().toInt();
+
+    if(ui->pushButton_open->text()== QStringLiteral("关闭串口")){
+        send_data[0] = 0x55;
+        send_data[1] = 0xaa;
+        send_data[2] = (quint8)data[0];
+        send_data[3] = (quint8)(data[0] >>8);
+        quint16 crc = data_process_.Checksum_u16(&send_data[2], 2);
+        send_data[4] = (quint8)crc;
+        send_data[5] = (quint8)(crc >>8);
+        for(quint8 i=0; i<6; i++){
+            senddata.append(send_data[i]);
+        }
+        serialport_->write(senddata);
+    }
 }

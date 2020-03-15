@@ -50,6 +50,8 @@ private slots:
 
     void on_comboBox_channel_currentIndexChanged(const QString &arg1);
 
+    void on_pushButton_set_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer *m_timer_;
@@ -63,8 +65,8 @@ private:
     qreal m_x_;
 
     quint16 number_points_show_;
-    qint16 offset_;
-    qint16 range_;
+    qint16 y_offset_;
+    qint16 y_range_;
     qint32 mouse_x_, mouse_y_;
 
     DataProcess data_process_;
